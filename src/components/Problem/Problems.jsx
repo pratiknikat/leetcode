@@ -4,6 +4,7 @@ import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
+import TableHead from "@mui/material/TableHead";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableFooter from "@mui/material/TableFooter";
@@ -15,29 +16,12 @@ import FirstPageIcon from "@mui/icons-material/FirstPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+
+import tableCellClasses from "@mui/material/TableCell";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-
-let darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-  },
-});
-
-if (window.matchMedia("(prefers-color-scheme: dark)")) {
-  darkTheme = createTheme({
-    palette: {
-      mode: "dark",
-    },
-  });
-} else {
-  darkTheme = createTheme({
-    palette: {
-      mode: "dark",
-    },
-  });
-}
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -108,24 +92,24 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-function createData(name, calories, fat) {
-  return { name, calories, fat };
+function createData(name, difficulty, solution) {
+  return { name, difficulty, solution };
 }
 
 const rows = [
-  createData("Cupcake", 305, 3.7),
-  createData("Donut", 452, 25.0),
-  createData("Eclair", 262, 16.0),
-  createData("Frozen yoghurt", 159, 6.0),
-  createData("Gingerbread", 356, 16.0),
-  createData("Honeycomb", 408, 3.2),
-  createData("Ice cream sandwich", 237, 9.0),
-  createData("Jelly Bean", 375, 0.0),
-  createData("KitKat", 518, 26.0),
-  createData("Lollipop", 392, 0.2),
-  createData("Marshmallow", 318, 0),
-  createData("Nougat", 360, 19.0),
-  createData("Oreo", 437, 18.0),
+  createData("1. Two Sum", "Easy", "Y"),
+  createData("2. Add Two Numbers", "Difficult", "Y"),
+  createData("3. Median of Two Sorted Arrays", "Easy", "N"),
+  createData("4. Longest Palindromic Substring", "Easy", "Y"),
+  createData("5. Zigzag Conversion", "Difficult", "N"),
+  createData("6. Reverse Integer", "Difficult", "N"),
+  createData("7. String to Integer (atoi)", "Hard", "Y"),
+  createData("8. Palindrome Number", "Difficult", "Y"),
+  createData("9. Regular Expression Matching", "Easy", "N"),
+  createData("10. Container With Most Water", "Hard", "N"),
+  createData("11. Integer to Roman", "Easy", "Y"),
+  createData("12. Roman to Integer", "Difficult", "Y"),
+  createData("13. Longest Common Prefix", "Easy", "Y"),
 ].sort((a, b) => (a.calories < b.calories ? -1 : 1));
 
 export const Problems = () => {
@@ -148,6 +132,22 @@ export const Problems = () => {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
+        <TableHead>
+          <TableRow>
+            <TableCell className="text-white " component="th" scope="row">
+              Status
+            </TableCell>
+            <TableCell className="text-white" component="th" scope="row">
+              Title
+            </TableCell>
+            <TableCell className="text-white" component="th" scope="row">
+              Difficulty
+            </TableCell>
+            <TableCell className="text-white" component="th" scope="row">
+              Solution
+            </TableCell>
+          </TableRow>
+        </TableHead>
         <TableBody>
           {(rowsPerPage > 0
             ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -155,13 +155,24 @@ export const Problems = () => {
           ).map((row) => (
             <TableRow key={row.name}>
               <TableCell className="text-white" component="th" scope="row">
-                {row.name}
+                {<CheckCircleOutlineIcon style={{ color: "green" }} />}
               </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
-                {row.calories}
+              <TableCell className="text-white" component="th" scope="row">
+                <p className="hover:text-blue-400 hover:cursor-pointer">
+                  {row.name}
+                </p>
               </TableCell>
-              <TableCell style={{ width: 160 }} align="right">
-                {row.fat}
+              <TableCell style={{ width: 160 }} align="left">
+                {row.difficulty == "Easy" ? (
+                  <p style={{ color: "#00Af9B" }}>Easy</p>
+                ) : row.difficulty == "Difficult" ? (
+                  <p style={{ color: "#FFB800" }}>Difficult</p>
+                ) : (
+                  <p style={{ color: "#FF2D55" }}>Hard</p>
+                )}
+              </TableCell>
+              <TableCell style={{ width: 160 }} align="left">
+                {row.solution}
               </TableCell>
             </TableRow>
           ))}
