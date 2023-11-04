@@ -3,9 +3,6 @@ import React, { useState } from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
-import { Link } from "react-router-dom";
-import { AiOutlineFire } from "react-icons/ai";
-import { IoMdNotificationsOutline } from "react-icons/io";
 import { FaRegFileCode } from "react-icons/fa";
 import { TbLogout } from "react-icons/tb";
 

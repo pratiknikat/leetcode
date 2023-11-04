@@ -9,7 +9,7 @@ export const Navbar = () => {
   const [count, setCount] = useState(0);
 
   return (
-    <div className="shadow-md p-[15px] rounded-md ml-2 mr-2 mb-2  dark:bg-[#282828] flex justify-between">
+    <div className="shadow-md p-[15px] rounded-md ml-2 mr-2 mb-2 bg-white dark:bg-[#282828] flex justify-between">
       <Link to={"/"}>
         <p className="text-[20px] dark:text-white">Logo</p>
       </Link>
