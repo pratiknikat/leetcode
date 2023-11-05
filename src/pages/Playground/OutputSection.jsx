@@ -1,6 +1,6 @@
 import React from "react";
 
-export const OutputSection = ({ output }) => {
+export const OutputSection = ({ output, executiontime, memoryUsage }) => {
   return (
     <div className="bg-white h-[65vh] ml-3 rounded-md overflow-y-scroll">
       <div
@@ -11,6 +11,8 @@ export const OutputSection = ({ output }) => {
       </div>
       <div className="p-3">
         <pre>{output}</pre>
+        <pre>{executiontime / 1000}</pre>
+        <pre>{memoryUsage}</pre>
       </div>
     </div>
   );

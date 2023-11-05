@@ -5,6 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 
 import { FaRegFileCode } from "react-icons/fa";
 import { TbLogout } from "react-icons/tb";
+import { Link } from "react-router-dom";
 
 export const ProfileController = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -34,46 +35,50 @@ export const ProfileController = () => {
         }}
       >
         <MenuItem onClick={handleClose}>
-          <div className="flex items-center">
-            <div>
-              <p
-                className="bg-[#1a1b1b] text-white p-1 mr-[15px] text-[20px] rounded-[50%] p-[12px] mr-2 dark:bg-white dark:text-black hover:cursor-pointer"
-                onClick={handleClick}
-              >
-                PN
-              </p>
+          <Link to="/profile">
+            <div className="flex items-center">
+              <div>
+                <p
+                  className="bg-[#1a1b1b] text-white p-1 mr-[15px] text-[20px] rounded-[50%] p-[12px] mr-2 dark:bg-white dark:text-black hover:cursor-pointer"
+                  onClick={handleClick}
+                >
+                  PN
+                </p>
+              </div>
+              <div>
+                <h3 className="font-bold text-[17px] mb-1">pratik_n_987</h3>
+                <p
+                  style={{
+                    width: "170px",
+                    fontSize: "13px",
+                    textWrap: "wrap",
+                    color: "#FFA116",
+                  }}
+                >
+                  Access all features with our Premium subscription
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-bold text-[17px] mb-1">pratik_n_987</h3>
+          </Link>
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <Link to="/playground">
+            <div className="flex items-center p-2 justify-between">
+              <FaRegFileCode color="gray" size={18} />
               <p
                 style={{
-                  width: "170px",
-                  fontSize: "13px",
-                  textWrap: "wrap",
-                  color: "#FFA116",
+                  marginLeft: "20px",
+                  fontSize: "14px",
+                  color: "gray",
                 }}
               >
-                Access all features with our Premium subscription
+                My Playground
               </p>
             </div>
-          </div>
+          </Link>
         </MenuItem>
         <MenuItem onClick={handleClose}>
-          <div className="flex items-center justify-between">
-            <FaRegFileCode color="gray" size={18} />
-            <p
-              style={{
-                marginLeft: "20px",
-                fontSize: "14px",
-                color: "gray",
-              }}
-            >
-              My Playground
-            </p>
-          </div>
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center p-2 justify-between">
             <TbLogout color="gray" size={22} />
             <p
               style={{

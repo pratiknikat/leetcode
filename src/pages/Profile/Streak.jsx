@@ -4,8 +4,8 @@ import { ResponsiveCalendar } from "@nivo/calendar";
 export const Streak = ({ data }) => (
   <ResponsiveCalendar
     data={data}
-    from="2016-03-01"
-    to="2016-07-12"
+    from="2022-01-01"
+    to="2022-10-12"
     emptyColor="#eeeeee"
     colors={["#cdeccd", "#9ed09e", "#64b164", "#3a903a", "#267326"]} // 5 shades of green
     margin={{ top: 40, right: 40, bottom: 40, left: 40 }}

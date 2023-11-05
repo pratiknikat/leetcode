@@ -22,7 +22,7 @@ export const CodeSection = ({ setCode, setLang }) => {
   };
 
   return (
-    <div className="h-[56vh] bg-white rounded-md overflow-y-scroll">
+    <div className="h-[53vh] bg-white rounded-md overflow-y-scroll">
       <div
         className="flex items-center justify-between px-4 py-1"
         style={{ borderBottom: "3px solid #F0F0F0" }}

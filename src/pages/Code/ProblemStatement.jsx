@@ -25,7 +25,7 @@ export const ProblemStatement = (props) => {
         padding: "10px",
         borderRadius: "5px",
         marginBottom: "10px",
-        height: "93vh",
+        height: "90vh",
         backgroundColor: "White",
         overflow: "scroll",
       }}

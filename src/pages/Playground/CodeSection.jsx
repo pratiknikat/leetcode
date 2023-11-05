@@ -9,7 +9,11 @@ import { Editor } from "./Editor";
 import { apiConnector } from "../../services/apiconnector";
 import { playgroundApi } from "../../services/apis";
 
-export const CodeSection = ({ onRunCode }) => {
+export const CodeSection = ({
+  onRunCode,
+  setExecutiontime,
+  setMemoryUsage,
+}) => {
   const [selectedLanguage, setSelectedLanguage] = useState("cpp");
   const [code, setCode] = useState("");
 
@@ -27,7 +31,9 @@ export const CodeSection = ({ onRunCode }) => {
         code: code,
         language: selectedLanguage,
       });
-      onRunCode(res.data.message); // Pass output to the parent component
+      onRunCode(res.data.message);
+      setExecutiontime(res.data.runtime);
+      setMemoryUsage(res.data.memory);
     } catch (error) {
       console.error("Error during code compilation:", error);
     }
