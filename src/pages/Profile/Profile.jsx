@@ -1,113 +1,75 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Streak } from "./Streak";
 import { Problems } from "../../components/Problem/Problems";
-
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { endpoints, problemApi } from "../../services/apis";
+import { apiConnector } from "../../services/apiconnector";
+import { ProgressBar } from "./ProgressBar";
+import SolvedQuestions from "./SolvedQuestions";
 export const Profile = () => {
-  const data = [
-    { value: 5, day: "2022-03-01" },
-    { value: 2, day: "2022-03-02" },
-    { value: 8, day: "2022-03-03" },
-    { value: 1, day: "2022-03-04" },
-    { value: 7, day: "2022-03-05" },
-    { value: 3, day: "2022-03-06" },
-    { value: 6, day: "2022-03-07" },
-    { value: 4, day: "2022-03-08" },
-    { value: 9, day: "2022-03-09" },
-    { value: 2, day: "2022-03-10" },
-    { value: 7, day: "2022-05-11" },
-    { value: 1, day: "2022-03-13" },
-    { value: 8, day: "2022-03-14" },
-    { value: 3, day: "2022-03-15" },
-    { value: 6, day: "2022-04-16" },
-    { value: 4, day: "2022-03-17" },
-    { value: 9, day: "2022-02-18" },
-    { value: 2, day: "2022-03-19" },
-    { value: 1, day: "2022-09-04" },
-    { value: 7, day: "2022-03-05" },
-    { value: 7, day: "2022-03-05" },
-    { value: 3, day: "2022-03-06" },
-    { value: 6, day: "2022-03-07" },
-    { value: 4, day: "2022-03-08" },
-    { value: 9, day: "2022-03-09" },
-    { value: 2, day: "2022-03-10" },
-    { value: 7, day: "2022-05-11" },
-    { value: 1, day: "2022-03-13" },
-    { value: 8, day: "2022-03-14" },
-    { value: 3, day: "2022-03-15" },
-    { value: 6, day: "2022-04-16" },
-    { value: 4, day: "2022-03-17" },
-    { value: 9, day: "2022-02-18" },
-    { value: 2, day: "2022-03-19" },
-    { value: 1, day: "2022-09-04" },
-    { value: 7, day: "2022-03-05" },
-    { value: 3, day: "2022-03-06" },
-    { value: 6, day: "2022-03-07" },
-    { value: 4, day: "2022-04-08" },
-    { value: 9, day: "2022-03-09" },
-    { value: 2, day: "2022-05-10" },
-    { value: 7, day: "2022-04-11" },
-    { value: 1, day: "2022-08-13" },
-    { value: 8, day: "2022-10-14" },
-    { value: 3, day: "2022-12-15" },
-    { value: 6, day: "2022-03-16" },
-    { value: 4, day: "2022-07-17" },
-    { value: 9, day: "2022-03-18" },
-    { value: 2, day: "2022-03-19" },
-    { value: 5, day: "2022-03-01" },
-    { value: 2, day: "2022-03-02" },
-    { value: 8, day: "2022-03-03" },
-    { value: 1, day: "2022-03-04" },
-    { value: 7, day: "2022-03-05" },
-    { value: 3, day: "2022-03-06" },
-    { value: 6, day: "2022-03-07" },
-    { value: 4, day: "2022-03-08" },
-    { value: 9, day: "2022-03-09" },
-    { value: 2, day: "2022-03-10" },
-    { value: 7, day: "2022-03-11" },
-    { value: 1, day: "2022-03-12" },
-    { value: 8, day: "2022-01-13" },
-    { value: 3, day: "2022-02-14" },
-    { value: 6, day: "2022-04-15" },
-    { value: 4, day: "2022-05-16" },
-    { value: 9, day: "2022-06-17" },
-    { value: 2, day: "2022-07-18" },
-    { value: 1, day: "2022-08-19" },
-    { value: 7, day: "2022-09-20" },
-    { value: 7, day: "2022-10-21" },
-    { value: 3, day: "2022-11-22" },
-    { value: 6, day: "2022-12-23" },
-    { value: 4, day: "2022-09-24" },
-    { value: 9, day: "2022-08-25" },
-    { value: 2, day: "2022-07-26" },
-    { value: 7, day: "2022-06-27" },
-    { value: 1, day: "2022-05-28" },
-    { value: 8, day: "2022-04-29" },
-    { value: 3, day: "2022-02-30" },
-    { value: 6, day: "2022-01-31" },
-    { value: 4, day: "2022-04-01" },
-    { value: 9, day: "2022-04-02" },
-    { value: 2, day: "2022-04-03" },
-    { value: 7, day: "2022-04-04" },
-    { value: 1, day: "2022-04-05" },
-    { value: 8, day: "2022-04-06" },
-    { value: 3, day: "2022-04-07" },
-    { value: 6, day: "2022-04-08" },
-    { value: 4, day: "2022-04-09" },
-    { value: 9, day: "2022-04-10" },
-    { value: 2, day: "2022-04-11" },
-    { value: 7, day: "2022-12-20" },
-    // Add more data points as needed
-  ];
+  const { user } = useSelector((state) => state.profile);
+  const { token } = useSelector((state) => state.auth);
+  const [userData, setUserData] = useState();
+  if (!token) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+        }}
+        className="login-container"
+      >
+        <img
+          width="45%"
+          height="45%"
+          src="https://static.vecteezy.com/system/resources/previews/005/879/539/non_2x/cloud-computing-modern-flat-concept-for-web-banner-design-man-enters-password-and-login-to-access-cloud-storage-for-uploading-and-processing-files-illustration-with-isolated-people-scene-free-vector.jpg"
+          alt="Login Image"
+        />
+        <Link href="/login">
+          <button
+            className="bg-gray-500 px-5 p-2 rounded-md text-white"
+            style={{ marginTop: "16px", fontSize: "1.5rem" }}
+          >
+            Login
+          </button>
+        </Link>
+      </div>
+    );
+  }
+
+  useEffect(() => {
+    const profile = async () => {
+      try {
+        const res = await apiConnector("POST", endpoints.SHOWPROFILE, {
+          userId: user._id,
+        });
+        setUserData(res.data.data);
+      } catch (error) {
+        console.error("Error fetching problem details:", error);
+      }
+    };
+
+    profile();
+  }, []);
+
+  useEffect(() => {
+    console.log(userData);
+  }, [userData]);
   return (
     <div className="bg-[#f7f9fb]">
       <Navbar />
+
       <div className="flex m-3 mx-[120px]">
         <div className="w-[25%] px-[21px] py-[16px] shadow-md bg-white bg-red h-[90vh] rounded-md">
           <div className="flex mt-2 mb-5">
             <div>
               <img
-                src="https://cdn3d.iconscout.com/3d/premium/thumb/business-male-7267567-5914557.png?f=webp"
+                src={user.profileImg}
                 alt="Profile Photo"
                 width={90}
                 style={{
@@ -118,34 +80,93 @@ export const Profile = () => {
             </div>
             <div className="ml-4 justify-between items-between">
               <h2 style={{ fontWeight: "bold", color: "#1a1b1b" }}>
-                pratik_n_987
+                {user.username}
               </h2>
-              <p style={{ color: "#262626BF" }}>Rank 12,988,624</p>
+              <p style={{ color: "#262626BF" }}>Score {userData.score}</p>
             </div>
           </div>
           <hr />
+          <div>
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: "5px",
+                  marginTop: "23px",
+                }}
+              >
+                <p style={{ fontWeight: "bold", fontSize: "13px" }}>Easy</p>
+                <p style={{ fontSize: "13px" }}>{userData.easy}/321</p>
+              </div>
+              <ProgressBar
+                totalQuestions={321} // replace with your actual total number of questions
+                solvedQuestions={userData.easy} // replace with your actual number of solved questions
+                solvedColor="#00B8A3"
+                remainingColor="#2CBB5D40"
+              />
+            </div>
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: "5px",
+                  marginTop: "20px",
+                }}
+              >
+                <p style={{ fontWeight: "bold", fontSize: "13px" }}>Medium</p>
+                <p style={{ fontSize: "13px" }}>{userData.medium}/290</p>
+              </div>
+              <ProgressBar
+                totalQuestions={290}
+                solvedQuestions={userData.medium}
+                solvedColor="#FFC01E"
+                remainingColor="#FFC01E40"
+              />
+            </div>
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: "5px",
+                  marginTop: "20px",
+                }}
+              >
+                <p style={{ fontWeight: "bold", fontSize: "13px" }}>Hard</p>
+                <p style={{ fontSize: "13px" }}>{userData.hard}/120</p>
+              </div>
+              <ProgressBar
+                totalQuestions={200}
+                solvedQuestions={userData.hard}
+                solvedColor="#EF4743"
+                remainingColor="#EF474340"
+              />
+            </div>
+          </div>
         </div>
         <div className="w-[75%] ml-4 bg-[#f7f9fb]">
           <div className="bg-white shadow-md ml-4 rounded-md ">
             <div>
               <h3 className="ml-4 flex pt-5 font-sans font-[20px] text-[1rem]">
-                <b>{data.length}</b>
+                {/* <b>{user.submission.length}</b> */}
                 <p className="ml-1" style={{ color: "#262626BF" }}>
                   {" "}
                   submissions in the last year
                 </p>
               </h3>
               <div className="h-[180px] w-[900px]">
-                <Streak data={data} />
+                <Streak data={userData.submission} />
               </div>
             </div>
           </div>
 
           <div
             className=" bg-white shadow-md ml-4 rounded-md mt-4 p-3"
-            style={{ maxHeight: "100vh" }}
+            style={{ maxHeight: "100vh", minHeight: "60vh" }}
           >
-            <Problems />
+            <SolvedQuestions problems={userData.problems} />
           </div>
         </div>
       </div>

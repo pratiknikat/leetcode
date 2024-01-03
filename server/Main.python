@@ -1,0 +1,40 @@
+class Solution:
+    def solve(self, ans, index, output, digits, mapping):
+        if index >= len(digits):
+            ans.append(output)
+            return
+
+        digit_char = digits[index]
+        digit_int = int(digit_char)
+        char_str = mapping[digit_int]
+
+        for i in range(len(char_str)):
+            ch = char_str[i]
+            output += ch
+            self.solve(ans, index + 1, output, digits, mapping)
+            output = output[:-1]
+
+    def letterCombinations(self, digits):
+        ans = []
+
+        if len(digits) == 0:
+            return ans
+
+        index = 0
+        output = ""
+        mapping = ["", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"]
+
+        self.solve(ans, index, output, digits, mapping)
+
+        return ans
+
+
+def main():
+    sol = Solution()
+    input_digits = "23"
+    result = sol.letterCombinations(input_digits)
+    print(result)
+
+
+if __name__ == "__main__":
+    main()

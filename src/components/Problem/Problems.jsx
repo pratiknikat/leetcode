@@ -1,6 +1,8 @@
 import * as React from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
+import { useEffect } from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -17,11 +19,8 @@ import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-
-import tableCellClasses from "@mui/material/TableCell";
-
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
+import { apiConnector } from "../../services/apiconnector";
+import { problemApi } from "../../services/apis";
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -92,33 +91,48 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-function createData(name, difficulty, solution) {
-  return { name, difficulty, solution };
-}
-
-const rows = [
-  createData("1. Two Sum", "Easy", "Y"),
-  createData("2. Add Two Numbers", "Difficult", "Y"),
-  createData("3. Median of Two Sorted Arrays", "Easy", "N"),
-  createData("4. Longest Palindromic Substring", "Easy", "Y"),
-  createData("5. Zigzag Conversion", "Difficult", "N"),
-  createData("6. Reverse Integer", "Difficult", "N"),
-  createData("7. String to Integer (atoi)", "Hard", "Y"),
-  createData("8. Palindrome Number", "Difficult", "Y"),
-  createData("9. Regular Expression Matching", "Easy", "N"),
-  createData("10. Container With Most Water", "Hard", "N"),
-  createData("11. Integer to Roman", "Easy", "Y"),
-  createData("12. Roman to Integer", "Difficult", "Y"),
-  createData("13. Longest Common Prefix", "Easy", "Y"),
-].sort((a, b) => (a.calories < b.calories ? -1 : 1));
-
 export const Problems = () => {
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [problems, setProblems] = React.useState([]);
 
-  // Avoid a layout jump when reaching the last page with empty rows.
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await apiConnector("GET", problemApi.GET_ALL_PROBLEM);
+        const formattedData = transformBackendData(response.data);
+        setProblems(formattedData);
+      } catch (error) {
+        console.error("Error fetching problem details:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const transformBackendData = (backendData) => {
+    if (!backendData || typeof backendData !== "object") {
+      console.error("Error: Backend data is not an object");
+      return [];
+    }
+    const dataArray = backendData.data;
+    if (!Array.isArray(dataArray)) {
+      console.error("Error: 'data' property is not an array");
+      return [];
+    }
+
+    return dataArray
+      .map((data) => ({
+        problemTitle: data.problemTitle,
+        level: data.level,
+        status: data.status ? "Y" : "N",
+        id: data._id,
+      }))
+      .sort((a, b) => (a.problemTitle < b.problemTitle ? -1 : 1));
+  };
+
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - problems.length) : 0;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -150,35 +164,44 @@ export const Problems = () => {
         </TableHead>
         <TableBody>
           {(rowsPerPage > 0
-            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : rows
+            ? problems.slice(
+                page * rowsPerPage,
+                page * rowsPerPage + rowsPerPage
+              )
+            : problems
           ).map((row) => (
-            <TableRow key={row.name}>
+            <TableRow key={row.problemTitle}>
               <TableCell className="text-white" component="th" scope="row">
                 {<CheckCircleOutlineIcon style={{ color: "green" }} />}
               </TableCell>
               <TableCell className="text-white" component="th" scope="row">
-                <p className="hover:text-blue-400 hover:cursor-pointer">
-                  {row.name}
-                </p>
+                {/* Use Link to create a dynamic link */}
+                <Link
+                  to={`/problem/${row.id}`}
+                  className="hover:text-blue-400 hover:cursor-pointer"
+                >
+                  <p className="hover:text-blue-400 hover:cursor-pointer">
+                    {row.problemTitle}
+                  </p>
+                </Link>
               </TableCell>
               <TableCell style={{ width: 160 }} align="left">
-                {row.difficulty == "Easy" ? (
+                {row.level === "Easy" ? (
                   <p style={{ color: "#00Af9B" }}>Easy</p>
-                ) : row.difficulty == "Difficult" ? (
+                ) : row.level === "Difficult" ? (
                   <p style={{ color: "#FFB800" }}>Difficult</p>
                 ) : (
                   <p style={{ color: "#FF2D55" }}>Hard</p>
                 )}
               </TableCell>
               <TableCell style={{ width: 160 }} align="left">
-                {row.solution}
+                {row.status}
               </TableCell>
             </TableRow>
           ))}
           {emptyRows > 0 && (
             <TableRow style={{ height: 53 * emptyRows }}>
-              <TableCell colSpan={6} />
+              <TableCell colSpan={4} />
             </TableRow>
           )}
         </TableBody>
@@ -187,7 +210,7 @@ export const Problems = () => {
             <TablePagination
               rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
               colSpan={3}
-              count={rows.length}
+              count={problems.length}
               rowsPerPage={rowsPerPage}
               page={page}
               SelectProps={{
