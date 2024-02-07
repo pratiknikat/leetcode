@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 const SolvedQuestions = ({ problems }) => {
-  console.log(problems);
   return (
     <div>
       {problems.map((prob) => (

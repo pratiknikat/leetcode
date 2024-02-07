@@ -58,7 +58,7 @@ export const Profile = () => {
   }, []);
 
   useEffect(() => {
-    console.log(userData);
+    // console.log(userData);
   }, [userData]);
   return (
     <div className="bg-[#f7f9fb]">
