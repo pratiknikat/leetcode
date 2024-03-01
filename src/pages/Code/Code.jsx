@@ -95,7 +95,6 @@ export const Code = () => {
           totalExecutionTime += executionTime;
           setOutput((prevOutput) => prevOutput + res.data.message);
 
-          // Compare user's output with expected output
           const userOutput = res.data.message.trim();
           const expectedOutput = testCase.output.trim();
 
@@ -144,7 +143,7 @@ export const Code = () => {
         const res = await apiConnector("POST", problemApi.COMPILE_CODE_API, {
           code: code,
           input: testCase.input,
-          language: "cpp", // Assuming the language is always "cpp" for simplicity
+          language: "cpp",
         });
 
         if (res.data.success) {
