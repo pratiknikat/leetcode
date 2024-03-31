@@ -47,7 +47,7 @@ exports.showProblem = async (req, res) => {
       message: "Problem Details",
     });
   } catch (error) {
-    console.error(err);
+    // console.error(err);
     return res.status(500).json({
       success: false,
       message: "Error in problem Details ",
@@ -69,7 +69,7 @@ exports.showallproblem = async (req, res) => {
       message: "Problem Details",
     });
   } catch (error) {
-    console.error(err);
+    // console.error(err);
     return res.status(500).json({
       success: false,
       message: "Error in problem Details ",

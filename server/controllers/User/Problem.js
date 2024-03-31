@@ -4,6 +4,7 @@ const Problem = require("../../models/Problem/Problem");
 
 exports.addProblemToUser = async (req, res) => {
   try {
+    console.log(req);
     const userId = req.body.userId;
     const problemId = req.body.problemId;
 

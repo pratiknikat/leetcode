@@ -170,7 +170,11 @@ export const Code = () => {
 
       if (allTestCasesPassed) {
         setOpen(true);
-        addToUser();
+        const add = await apiConnector("POST", endpoints.ADDPROBLEMTOUSER, {
+          userId: user._id,
+          problemId: problemId,
+        });
+        console.log("first");
         console.log("All test cases passed!");
       } else {
       }
