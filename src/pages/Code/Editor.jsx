@@ -9,7 +9,6 @@ export const Editor = ({ onCodeChange, lang }) => {
   const [code, setCode] = useState(getDefaultCode(lang));
 
   useEffect(() => {
-    // Reset code when the language changes
     setCode(getDefaultCode(lang));
   }, [lang]);
 

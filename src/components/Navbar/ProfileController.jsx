@@ -104,24 +104,8 @@ export const ProfileController = () => {
             </div>
           </Link>
         </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <Link to="/login">
-            <div className="flex items-center p-2 justify-between">
-              <TbLogin2 color="gray" size={22} />
-              <p
-                style={{
-                  marginLeft: "20px",
-                  fontSize: "14px",
-                  color: "gray",
-                }}
-              >
-                Login
-              </p>
-            </div>
-          </Link>
-        </MenuItem>
 
-        {user && ( // If user is logged in
+        {user ? (
           <MenuItem onClick={handleLogout}>
             <div className="flex items-center p-2 justify-between">
               <TbLogout color="gray" size={22} />
@@ -135,6 +119,23 @@ export const ProfileController = () => {
                 Sign Out
               </p>
             </div>
+          </MenuItem>
+        ) : (
+          <MenuItem onClick={handleClose}>
+            <Link to="/login">
+              <div className="flex items-center p-2 justify-between">
+                <TbLogin2 color="gray" size={22} />
+                <p
+                  style={{
+                    marginLeft: "20px",
+                    fontSize: "14px",
+                    color: "gray",
+                  }}
+                >
+                  Login
+                </p>
+              </div>
+            </Link>
           </MenuItem>
         )}
       </Menu>

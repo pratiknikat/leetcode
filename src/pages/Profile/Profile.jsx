@@ -33,7 +33,7 @@ export const Profile = () => {
           src="https://static.vecteezy.com/system/resources/previews/005/879/539/non_2x/cloud-computing-modern-flat-concept-for-web-banner-design-man-enters-password-and-login-to-access-cloud-storage-for-uploading-and-processing-files-illustration-with-isolated-people-scene-free-vector.jpg"
           alt="Login Image"
         />
-        <Link href="/login">
+        <Link to="/login">
           <button
             className="bg-gray-500 px-5 p-2 rounded-md text-white"
             style={{ marginTop: "16px", fontSize: "1.5rem" }}
@@ -51,16 +51,17 @@ export const Profile = () => {
         const res = await apiConnector("POST", endpoints.SHOWPROFILE, {
           userId: user._id,
         });
+        console.log(res);
         setUserData(res.data.data);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching problem details:", error);
+        console.error("Error fetching profile details:", error);
         setLoading(false);
       }
     };
 
     fetchProfile();
-  }, []);
+  }, [user._id]);
 
   return (
     <div className="bg-[#f7f9fb]">
@@ -86,13 +87,13 @@ export const Profile = () => {
                 </div>
                 <div className="ml-4 justify-between items-between">
                   <h2 style={{ fontWeight: "bold", color: "#1a1b1b" }}>
-                    {/* {user.username} */}
+                    {user.username}
                   </h2>
-                  {/* <p style={{ color: "#262626BF" }}>Score {userData.score}</p> */}
+                  <p style={{ color: "#262626BF" }}>Score {userData.score}</p>
                 </div>
               </div>
               <hr />
-              <div>
+              <div className="mb-8">
                 <div>
                   <div
                     style={{
@@ -103,11 +104,11 @@ export const Profile = () => {
                     }}
                   >
                     <p style={{ fontWeight: "bold", fontSize: "13px" }}>Easy</p>
-                    <p style={{ fontSize: "13px" }}>{userData.easy}/321</p>
+                    <p style={{ fontSize: "13px" }}>{userData.easy}/10</p>
                   </div>
                   <ProgressBar
-                    totalQuestions={321} // replace with your actual total number of questions
-                    solvedQuestions={userData.easy} // replace with your actual number of solved questions
+                    totalQuestions={10}
+                    solvedQuestions={userData.easy}
                     solvedColor="#00B8A3"
                     remainingColor="#2CBB5D40"
                   />
@@ -153,6 +154,29 @@ export const Profile = () => {
                   />
                 </div>
               </div>
+              <hr />
+              <div className="mt-4">
+                <p> Badge</p>
+                {/* if userdata submmision  of length is greater than equal to 1 the show https://assets.leetcode.com/static_assets/marketing/lg50.png this image if user data submmision is greater than 10 then show https://assets.leetcode.com/static_assets/marketing/lg100.png */}
+                <div className="mt-3 flex flex-wrap">
+                  {userData.submission && userData.submission.length >= 1 ? (
+                    <img
+                      src="https://assets.leetcode.com/static_assets/marketing/lg50.png"
+                      alt="badge"
+                      width={70}
+                      height={70}
+                    />
+                  ) : null}
+                  {userData.submission && userData.submission.length >= 10 ? (
+                    <img
+                      src="https://assets.leetcode.com/static_assets/marketing/lg100.png"
+                      alt="badge"
+                      width={70}
+                      height={70}
+                    />
+                  ) : null}
+                </div>
+              </div>
             </>
           )}
         </div>
@@ -160,7 +184,7 @@ export const Profile = () => {
           <div className="bg-white shadow-md ml-4 rounded-md ">
             <div>
               <h3 className="ml-4 flex pt-5 font-sans font-[20px] text-[1rem]">
-                {/* <b>{user.submission.length}</b> */}
+                {userData.submission ? userData.submission.length : 0}
                 <p className="ml-1" style={{ color: "#262626BF" }}>
                   {" "}
                   submissions in the last year
@@ -184,6 +208,10 @@ export const Profile = () => {
               <p>Loading...</p>
             ) : (
               <>
+                <p>Solved Problem</p>
+                <br />
+                <hr />
+                <br />
                 {userData.problems ? (
                   <SolvedQuestions problems={userData.problems} />
                 ) : (

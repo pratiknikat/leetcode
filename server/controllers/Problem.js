@@ -2,31 +2,25 @@ const Problem = require("../models/Problem/Problem");
 
 exports.addProblem = async (req, res) => {
   try {
-    const { qno, level, problem, sampleTestCase } = req.body;
-    const TestCase = req.body.TestCase;
+    console.log(req.body);
+    const allProblem = await Problem.find({});
+    const len = allProblem.length;
 
-    if (!qno || !level || !problem || !sampleTestCase || !TestCase) {
-      return res.status(400).json({
-        success: false,
-        message: "Enter Proper Problem Data",
-      });
-    }
-    const addquestion = await Problem.create({
-      qno: qno,
-      level: level,
-      problem: problem,
+    // qno ,level,problem, sampleTestCase, TestCase,problemTitle
+    const problem = new Problem({
+      qno: len + 1,
+      level: req.body.problemLevel,
+      problem: req.body.content,
+      sampleTestCase: req.body.sampleTestCases,
+      TestCase: req.body.testCases,
+      problemTitle: req.body.problemTitle,
     });
-
-    return res.status(200).json({
-      success: true,
-      addquestion,
-      message: "Question added successfully",
-    });
+    await problem.save();
+    return res.status(200).json({ message: "Successfully added!" });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({
       success: false,
-      message: "Question error ",
+      message: "Error in adding problem",
     });
   }
 };
@@ -69,7 +63,6 @@ exports.showallproblem = async (req, res) => {
       message: "Problem Details",
     });
   } catch (error) {
-    // console.error(err);
     return res.status(500).json({
       success: false,
       message: "Error in problem Details ",

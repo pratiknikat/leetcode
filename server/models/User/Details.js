@@ -6,15 +6,19 @@ const detailsSchema = new mongoose.Schema({
   },
   easy: {
     type: Number,
+    default: 0,
   },
   medium: {
     type: Number,
+    default: 0,
   },
   hard: {
     type: Number,
+    default: 0,
   },
   score: {
     type: Number,
+    default: 0,
   },
   submission: [
     {

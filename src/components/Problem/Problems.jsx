@@ -169,42 +169,45 @@ export const Problems = () => {
                 page * rowsPerPage + rowsPerPage
               )
             : problems
-          ).map((row) => (
-            <TableRow key={row.problemTitle}>
-              <TableCell className="text-white" component="th" scope="row">
-                {<CheckCircleOutlineIcon style={{ color: "green" }} />}
-              </TableCell>
-              <TableCell className="text-white" component="th" scope="row">
-                {/* Use Link to create a dynamic link */}
-                <Link
-                  to={`/problem/${row.id}`}
-                  className="hover:text-blue-400 hover:cursor-pointer"
-                >
-                  <p className="hover:text-blue-400 hover:cursor-pointer">
-                    {row.problemTitle}
-                  </p>
-                </Link>
-              </TableCell>
-              <TableCell style={{ width: 160 }} align="left">
-                {row.level === "Easy" ? (
-                  <p style={{ color: "#00Af9B" }}>Easy</p>
-                ) : row.level === "Difficult" ? (
-                  <p style={{ color: "#FFB800" }}>Difficult</p>
-                ) : (
-                  <p style={{ color: "#FF2D55" }}>Hard</p>
-                )}
-              </TableCell>
-              <TableCell style={{ width: 160 }} align="left">
-                {row.status}
-              </TableCell>
-            </TableRow>
-          ))}
+          )
+            .filter((row) => row.status === "Y")
+            .map((row) => (
+              <TableRow key={row.problemTitle}>
+                <TableCell className="text-white" component="th" scope="row">
+                  {<CheckCircleOutlineIcon style={{ color: "green" }} />}
+                </TableCell>
+                <TableCell className="text-white" component="th" scope="row">
+                  {/* Use Link to create a dynamic link */}
+                  <Link
+                    to={`/problem/${row.id}`}
+                    className="hover:text-blue-400 hover:cursor-pointer"
+                  >
+                    <p className="hover:text-blue-400 hover:cursor-pointer">
+                      {row.problemTitle}
+                    </p>
+                  </Link>
+                </TableCell>
+                <TableCell style={{ width: 160 }} align="left">
+                  {row.level === "Easy" ? (
+                    <p style={{ color: "#00Af9B" }}>Easy</p>
+                  ) : row.level === "medium" ? (
+                    <p style={{ color: "#FFB800" }}>Medium</p>
+                  ) : (
+                    <p style={{ color: "#FF2D55" }}>Hard</p>
+                  )}
+                </TableCell>
+                <TableCell style={{ width: 160 }} align="left">
+                  {row.status}
+                </TableCell>
+              </TableRow>
+            ))}
           {emptyRows > 0 && (
             <TableRow style={{ height: 53 * emptyRows }}>
               <TableCell colSpan={4} />
             </TableRow>
           )}
         </TableBody>
+
         <TableFooter>
           <TableRow>
             <TablePagination

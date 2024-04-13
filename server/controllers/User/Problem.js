@@ -4,12 +4,9 @@ const Problem = require("../../models/Problem/Problem");
 
 exports.addProblemToUser = async (req, res) => {
   try {
-    console.log(req);
-    const userId = req.body.userId;
-    const problemId = req.body.problemId;
+    const { userId, problemId } = req.body;
 
     const problem = await Problem.findById(problemId);
-
     if (!problem) {
       return res.status(400).json({
         success: false,
@@ -17,8 +14,7 @@ exports.addProblemToUser = async (req, res) => {
       });
     }
 
-    const user = await Details.findOne({ userId });
-
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(400).json({
         success: false,
@@ -26,19 +22,27 @@ exports.addProblemToUser = async (req, res) => {
       });
     }
 
-    if (user.problems.includes(problemId)) {
+    const details = await Details.findOne({ userId: userId });
+    if (!details) {
+      return res.status(400).json({
+        success: false,
+        message: "Details not found for user",
+      });
+    }
+
+    if (details.problems.some((p) => p.equals(problemId))) {
       const today = new Date().toISOString().split("T")[0];
-      const submissionIndex = user.submission.findIndex(
+      const submissionIndex = details.submission.findIndex(
         (entry) => entry.day === today
       );
 
       if (submissionIndex !== -1) {
-        user.submission[submissionIndex].value++;
+        details.submission[submissionIndex].value++;
       } else {
-        user.submission.push({ value: 1, day: today });
+        details.submission.push({ value: 1, day: today });
       }
 
-      await user.save();
+      await details.save();
       return res.status(200).json({
         success: true,
         message: "User already added this problem",
@@ -46,33 +50,28 @@ exports.addProblemToUser = async (req, res) => {
     }
 
     if (problem.level === "Easy") {
-      user.easy++;
+      details.easy++;
     } else if (problem.level === "Medium") {
-      user.medium++;
+      details.medium++;
     } else {
-      user.hard++;
+      details.hard++;
     }
 
-    user.score += 5;
-    user.problems.push(problemId);
+    details.score += 5;
+    details.problems.push(problemId);
 
     const today = new Date().toISOString().split("T")[0];
-    console.log(today);
-    // display current time
-    let startTime = new Date().getHours() + ":00";
-    console.log(startTime);
-
-    const submissionIndex = user.submission.findIndex(
+    const submissionIndex = details.submission.findIndex(
       (entry) => entry.day === today
     );
 
     if (submissionIndex !== -1) {
-      user.submission[submissionIndex].value++;
+      details.submission[submissionIndex].value++;
     } else {
-      user.submission.push({ value: 1, day: today });
+      details.submission.push({ value: 1, day: today });
     }
 
-    await user.save();
+    await details.save();
 
     return res.status(200).json({
       success: true,

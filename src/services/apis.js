@@ -6,6 +6,7 @@ export const endpoints = {
   LOGIN_API: BASE_URL + "/auth/login",
   ADDPROBLEMTOUSER: BASE_URL + "/auth/addproblemtouser",
   SHOWPROFILE: BASE_URL + "/auth/showprofile",
+  ADD_PROBLEM: BASE_URL + "/problem/addproblem",
 };
 export const problemApi = {
   SHOW_PROBLEM_API: BASE_URL + "/problem/showproblem",

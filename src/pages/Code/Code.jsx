@@ -30,6 +30,7 @@ export const Code = () => {
   const [sampleTestCase, setSampleTestCase] = useState([]);
   const [testCases, setTestCases] = useState([]);
   const [items, setItems] = useState([]);
+  const [passed, setPassed] = useState(false);
   const [avg, setAvg] = useState(0);
   const navigate = useNavigate();
 
@@ -78,12 +79,30 @@ export const Code = () => {
     problemDetails();
   }, [problemId]);
 
-  const handleRunCode = async () => {
+  const addToUser = async () => {
     try {
-      let totalExecutionTime = 0;
+      const add = await apiConnector("POST", endpoints.ADDPROBLEMTOUSER, {
+        userId: user._id,
+        problemId: problemId,
+      });
+      console.log(add);
+    } catch (error) {}
+  };
+
+  const handleRunCode = async () => {
+    if (!token) {
+      // Redirect to login if token doesn't exist
+      navigate("/login");
+      return;
+    }
+    try {
       let allTestCasesPassed = true;
 
-      const promises = testCases.map(async (testCase, index) => {
+      // Loop through each test case
+      for (let i = 0; i < testCases.length; i++) {
+        const testCase = testCases[i];
+
+        // Compile code against the current test case
         const res = await apiConnector("POST", problemApi.COMPILE_CODE_API, {
           code: code,
           input: testCase.input,
@@ -91,112 +110,94 @@ export const Code = () => {
         });
 
         if (res.data.success) {
-          const executionTime = res.data.time;
-          totalExecutionTime += executionTime;
-          setOutput((prevOutput) => prevOutput + res.data.message);
-
           const userOutput = res.data.message.trim();
           const expectedOutput = testCase.output.trim();
-
           if (userOutput !== expectedOutput) {
             allTestCasesPassed = false;
-            // Display popup with details
-            console.log(`Test Case ${index + 1} Failed:`);
+            console.log(`Test Case ${i + 1} Failed:`);
             console.log(`User Output: ${userOutput}`);
             console.log(`Expected Output: ${expectedOutput}`);
+            setOutput(
+              `Test Case ${
+                i + 1
+              } Failed:\nUser Output: ${userOutput}\nExpected Output: ${expectedOutput}`
+            );
           } else {
-            console.log(`Test Case ${index + 1} Passed`);
+            console.log(`Test Case ${i + 1} Passed`);
           }
         } else {
           console.error("Error during code compilation:", res.data.message);
         }
-      });
-
-      await Promise.all(promises);
-
-      if (allTestCasesPassed) {
-        console.log("All test cases passed!");
-      } else {
-        // Show a popup or handle the display of failure details as needed
-        // You may want to use a library like MUI Dialog for displaying popups
       }
 
-      const averageExecutionTime = totalExecutionTime / testCases.length;
-      console.log(`Average Time Complexity: ${averageExecutionTime} ms`);
+      if (allTestCasesPassed) {
+        setPassed(true);
+        setOutput("All test cases passed!");
+      } else {
+      }
     } catch (error) {
       console.error("Error during code compilation:", error);
     }
   };
 
-  const addToUser = async () => {
-    const add = await apiConnector("POST", endpoints.ADDPROBLEMTOUSER, {
-      userId: user._id,
-      problemId: problemId,
-    });
-  };
   const handleSubmitCode = async () => {
+    if (!token) {
+      // Redirect to login if token doesn't exist
+      navigate("/login");
+      return;
+    }
     try {
-      let totalExecutionTime = 0;
       let allTestCasesPassed = true;
 
-      const promises = testCases.map(async (testCase, index) => {
+      // Loop through each test case
+      for (let i = 0; i < testCases.length; i++) {
+        const testCase = testCases[i];
+
+        // Compile code against the current test case
         const res = await apiConnector("POST", problemApi.COMPILE_CODE_API, {
           code: code,
           input: testCase.input,
-          language: "cpp",
+          language: "cpp", // Assuming the language is always "cpp" for simplicity
         });
 
         if (res.data.success) {
-          const executionTime = res.data.time;
-          totalExecutionTime += executionTime;
-          setOutput((prevOutput) => prevOutput + res.data.message);
           const userOutput = res.data.message.trim();
           const expectedOutput = testCase.output.trim();
-
           if (userOutput !== expectedOutput) {
             allTestCasesPassed = false;
-            console.log(`Test Case ${index + 1} Failed:`);
+            console.log(`Test Case ${i + 1} Failed:`);
             console.log(`User Output: ${userOutput}`);
             console.log(`Expected Output: ${expectedOutput}`);
+            setOutput(
+              `Test Case ${
+                i + 1
+              } Failed:\nUser Output: ${userOutput}\nExpected Output: ${expectedOutput}`
+            );
           } else {
-            console.log(`Test Case ${index + 1} Passed`);
+            console.log(`Test Case ${i + 1} Passed`);
           }
         } else {
           console.error("Error during code compilation:", res.data.message);
         }
-      });
-
-      await Promise.all(promises);
-
-      if (allTestCasesPassed) {
-        setOpen(true);
-        const add = await apiConnector("POST", endpoints.ADDPROBLEMTOUSER, {
-          userId: user._id,
-          problemId: problemId,
-        });
-        console.log("first");
-        console.log("All test cases passed!");
-      } else {
       }
 
-      const averageExecutionTime = totalExecutionTime / testCases.length;
-      setAvg(averageExecutionTime);
-      console.log(`Average Time Complexity: ${averageExecutionTime} ms`);
+      if (allTestCasesPassed) {
+        addToUser();
+        setOpen(true);
+
+        setOutput("All test cases passed!");
+      } else {
+      }
     } catch (error) {
       console.error("Error during code compilation:", error);
     }
   };
-
   const handleClickOpen = () => {
     handleSubmitCode();
   };
 
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const handleSubmit = async () => {
-    console.log("Submit clicked");
   };
 
   return (
@@ -229,7 +230,7 @@ export const Code = () => {
               PaperProps={{
                 style: {
                   width: "700px",
-                  height: "460px",
+                  height: "320px",
                 },
               }}
             >
@@ -306,34 +307,6 @@ export const Code = () => {
                     </div>
                   </div>
 
-                  <div className="mt-8">
-                    <p
-                      className="mb-4"
-                      style={{ color: "#172067", fontFamily: "sans-serif" }}
-                    >
-                      More challenges
-                    </p>
-                    <div style={{ display: "flex", flexWrap: "wrap" }}>
-                      <p
-                        className="w-[47%] p-1 px-3 m-1 bg-[#F0F0F0] rounded-md"
-                        style={{ fontSize: "15px" }}
-                      >
-                        Binary Tree Maximum path sum
-                      </p>
-                      <p
-                        className="w-[47%] p-1 px-3 m-1 bg-[#F0F0F0] rounded-md"
-                        style={{ fontSize: "15px" }}
-                      >
-                        Binary Tree Maximum path sum
-                      </p>
-                      <p
-                        className="w-[47%] p-1 px-3 m-1 bg-[#F0F0F0] rounded-md"
-                        style={{ fontSize: "15px" }}
-                      >
-                        Binary Tree Maximum path sum
-                      </p>
-                    </div>
-                  </div>
                   <div className="mt-7 flex justify-center">
                     <button
                       className="p-2 px-4 bg-[#3876BF] text-white rounded-md "
@@ -370,7 +343,7 @@ export const Code = () => {
             <CodeSection setCode={setCode} setLang={setLang} />
           </div>
           <div>
-            <TestCases items={items} />
+            <TestCases items={items} passed={passed} setPassed={setPassed} />
           </div>
         </div>
       </div>

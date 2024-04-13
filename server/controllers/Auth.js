@@ -5,11 +5,13 @@ const otpGenerator = require("otp-generator");
 const User = require("../models/User/User");
 const Details = require("../models/User/Details");
 const Playground = require("../models/Playground/Playground");
+//  Sign Up Controller
 
 exports.signup = async (req, res) => {
   try {
     const { name, username, email, password, confirmPassword, otp } = req.body;
     const confirmationPassword = confirmPassword;
+
     if (
       !name ||
       !username ||
@@ -89,7 +91,6 @@ exports.signup = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body);
     if (!email || !password) {
       return res.status(400).json({
         success: false,
@@ -136,6 +137,7 @@ exports.login = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
+    // Return 500 Internal Server Error status code with error message
     return res.status(500).json({
       success: false,
       message: `Login Failure Please Try Again`,
